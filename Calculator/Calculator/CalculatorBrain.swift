@@ -15,7 +15,7 @@ struct CalculatorBrain {
     private enum Operation {
         case constant(Double)
         case unaryOperation((Double)->Double)
-        case binaryOperations((Double, Double)->Double)
+        case binaryOperation((Double, Double)->Double)
         case equals
     }
     
@@ -24,11 +24,14 @@ struct CalculatorBrain {
         "e" : Operation.constant(M_E),
         "√" : Operation.unaryOperation(sqrt),
         "cos": Operation.unaryOperation(cos),
+        "sin": Operation.unaryOperation(sin),
+        "^": Operation.binaryOperation({pow($0, $1)}),
+        "abs": Operation.unaryOperation(abs),
         "±" : Operation.unaryOperation({-$0}),
-        "×" : Operation.binaryOperations({$0 * $1}),
-        "÷" : Operation.binaryOperations({$0 / $1}),
-        "-" : Operation.binaryOperations({$0 - $1}),
-        "+" : Operation.binaryOperations({$0 + $1}),
+        "×" : Operation.binaryOperation({$0 * $1}),
+        "÷" : Operation.binaryOperation({$0 / $1}),
+        "-" : Operation.binaryOperation({$0 - $1}),
+        "+" : Operation.binaryOperation({$0 + $1}),
         "=" : Operation.equals
         
     ]
@@ -42,7 +45,7 @@ struct CalculatorBrain {
                 if accumulator != nil {
                     accumulator = function(accumulator!)
                 }
-            case .binaryOperations(let function):
+            case .binaryOperation(let function):
                 if accumulator != nil {
                     pendingBinaryOperation = PendingBinaryOperation(function: function, firstOperand: accumulator!)
                     accumulator = nil
