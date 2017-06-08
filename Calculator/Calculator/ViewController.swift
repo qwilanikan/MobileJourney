@@ -12,7 +12,11 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var display: UILabel!
     
+    @IBOutlet weak var sequenceOfOperations: UILabel!
+    
     var userIsInTheMiddleOfTyping = false
+    
+    private var brain = CalculatorBrain()
    
     @IBAction func touchDigit(_ sender: UIButton) {
         let digit = sender.currentTitle!
@@ -36,8 +40,6 @@ class ViewController: UIViewController {
         }
     }
     
-    private var brain = CalculatorBrain()
-    
     @IBAction func performOperation(_ sender: UIButton) {
         if userIsInTheMiddleOfTyping {
             brain.setOperand(displayValue)
@@ -48,6 +50,11 @@ class ViewController: UIViewController {
         }
         if let result = brain.result {
             displayValue = result
+        }
+        if (brain.resultIsPending) {
+            sequenceOfOperations.text = brain.description + "..."
+        } else {
+            sequenceOfOperations.text = brain.description + " ="
         }
         
     }
