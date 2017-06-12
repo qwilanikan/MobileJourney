@@ -43,14 +43,6 @@ struct CalculatorBrain {
         
     ]
     
-    // not working still:
-    // also description is not really clearing properly gah!!!!!! ?? check on this
-    // 7 + sqrt(9)3 = 10  The three is an outcome and should not be in the description
-    //(7 + 9 √ = would show “7 + √(9) =“ (10 in the display)) this does not work
-    
-    //show symbol
-    
-    
     mutating func performOperation(_ symbol: String) {
         if let operation = operations[symbol] {
             switch operation {
