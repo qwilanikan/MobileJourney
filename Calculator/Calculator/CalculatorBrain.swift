@@ -13,6 +13,8 @@ struct CalculatorBrain {
     var resultIsPending = false
     
     private var accumulator: Double?
+    private var nested = false
+    
     var description = ""
     
     private enum Operation {
@@ -20,6 +22,7 @@ struct CalculatorBrain {
         case unaryOperation((Double)->Double)
         case binaryOperation((Double, Double)->Double)
         case equals
+        case clear
     }
     
     private var operations: Dictionary<String, Operation> = [
@@ -35,12 +38,17 @@ struct CalculatorBrain {
         "÷" : Operation.binaryOperation({$0 / $1}),
         "-" : Operation.binaryOperation({$0 - $1}),
         "+" : Operation.binaryOperation({$0 + $1}),
-        "=" : Operation.equals
+        "=" : Operation.equals,
+        "C" : Operation.clear
         
     ]
     
     // not working still:
-    // also description is not really clearing properly gah!!!!!!
+    // also description is not really clearing properly gah!!!!!! ?? check on this
+    // 7 + sqrt(9)3 = 10  The three is an outcome and should not be in the description
+    //(7 + 9 √ = would show “7 + √(9) =“ (10 in the display)) this does not work
+    
+    //show symbol
     
     
     mutating func performOperation(_ symbol: String) {
@@ -49,17 +57,21 @@ struct CalculatorBrain {
             case .constant(let value):
                 accumulator = value
                 if(!resultIsPending) {
-                    description += "\(symbol)"
-                }
-                else {
                     description = "\(symbol)"
+                } else {
+                    description = description + "\(symbol)"
+                    nested = true
                 }
         
             case .unaryOperation(let function):
                 if accumulator != nil {
                     if (resultIsPending) {
                         description = description + "\(symbol)(\(accumulator!)) "
-                    } else {
+                        nested = true
+                    } else if description == "" {
+                        description = "\(symbol)(\(accumulator!))"
+                    }
+                    else {
                         description = "\(symbol)(\(description))"
                     }
                     accumulator = function(accumulator!)
@@ -68,7 +80,7 @@ struct CalculatorBrain {
                 if accumulator != nil {
                     
                     if (description.isEmpty){
-                    description = "\(accumulator!) \(symbol) "
+                        description = "\(accumulator!) \(symbol) "
                     } else if resultIsPending {
                         description = description + "\(accumulator!) \(symbol) "
                     } else {
@@ -84,9 +96,16 @@ struct CalculatorBrain {
                     resultIsPending = true
                 }
             case .equals:
-                description = description + "\(accumulator!)"
+                if (!nested){description = description + "\(accumulator!)"}
+                nested = false
                 performPendingBinaryOperation()
+            case .clear:
+                description = ""
+                nested = false
+                accumulator = nil
+                resultIsPending = false
             }
+            
         }
     }
     

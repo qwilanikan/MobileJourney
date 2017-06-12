@@ -38,7 +38,7 @@ class ViewController: UIViewController {
         set {
             display.text = String(newValue)
         }
-    }
+    }    
     
     @IBAction func performOperation(_ sender: UIButton) {
         if userIsInTheMiddleOfTyping {
@@ -51,13 +51,16 @@ class ViewController: UIViewController {
         if let result = brain.result {
             displayValue = result
         }
-        if (brain.resultIsPending) {
+        if brain.description == "" {
+            sequenceOfOperations.text = brain.description
+            displayValue = 0
+        }
+        else if brain.resultIsPending {
             sequenceOfOperations.text = brain.description + "..."
         } else {
-            sequenceOfOperations.text = brain.description + " ="
+            sequenceOfOperations.text = brain.description + "="
         }
         
     }
-    
 }
 
