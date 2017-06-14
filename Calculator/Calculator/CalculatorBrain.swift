@@ -13,6 +13,7 @@ struct CalculatorBrain {
     var resultIsPending = false
     
     private var accumulator: Double?
+    private var operand: String?
     private var nested = false
     
     var description = ""
@@ -128,11 +129,13 @@ struct CalculatorBrain {
         }
     }
     
+    mutating func setOperand(variable named: String) {
+        operand = named
+    }
+    
     var result: Double? {
         get {
             return accumulator
         }
     }
-    
-    
 }
