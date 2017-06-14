@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<testsuites name='IOSStarterTests.xctest' tests='4' failures='1'>
+  <testsuite name='IOSStarterUITests.IOSStarterUITests' tests='1' failures='0'>
+    <testcase classname='IOSStarterUITests.IOSStarterUITests' name='testExample' time='7.434'/>
+  </testsuite>
+  <testsuite name='IOSStarterTests.IOSStarterTests' tests='2' failures='0'>
+    <testcase classname='IOSStarterTests.IOSStarterTests' name='testExample' time='0.001'/>
+    <testcase classname='IOSStarterTests.IOSStarterTests' name='testPerformanceExample' time='0.404'/>
+  </testsuite>
+  <testsuite name='IOSStarterTests.YourSpec' tests='1' failures='1'>
+    <testcase classname='IOSStarterTests.YourSpec' name='Your_Spec__when_this_condition_is_met__should_do_this_thing'>
+      <failure message='expected to be false, got &lt;true&gt;'>IOSStarterTests/YourSpec.swift:17</failure>
+    </testcase>
+  </testsuite>
+</testsuites>
