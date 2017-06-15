@@ -133,9 +133,26 @@ struct CalculatorBrain {
         operand = named
     }
     
+    func evaluate(using variables: Dictionary<String, Double>? = nil )
+        -> (result: Double?, isPending: Bool, description: String)
+    {
+        
+    }
+    
     var result: Double? {
         get {
             return accumulator
         }
     }
 }
+
+struct variableDictionary {
+    private var variables: Dictionary<String, Double> = [
+        "M" : nil
+    ]
+
+}
+
+
+
+
