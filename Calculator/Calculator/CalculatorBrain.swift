@@ -10,13 +10,33 @@ import Foundation
 
 struct CalculatorBrain {
     
-    var resultIsPending = false
+    var resultIsPending = false //don't use
     
-    private var accumulator: Double?
+    private var accumulator: Double?  // don't need this anymore, I should get rid of it
     private var operand: String?
     private var nested = false
     
-    var description = ""
+    private var sequenceOfOperationsAndOperands: Array<CalculatorButton> = []
+    
+    private enum CalculatorButton {
+        case Operation(String)
+        case variable(String)
+        case number(Double)
+        
+    }
+    
+    
+    var description = "" //don't use
+    //However, do not use any of these vars anywhere in your code in this assignment. Use evaluate instead.
+    //does that mean we should get rid of them where they were being used before?
+    
+    
+    
+    var result: Double? {       //don't use (or what do we do with these? does depricated mean that we cet rid of them?)
+        get {
+            return accumulator
+        }
+    }
     
     private enum Operation {
         case constant(Double)
@@ -44,7 +64,12 @@ struct CalculatorBrain {
         
     ]
     
+    mutating func setOperation(_ symbol: String) {
+        sequenceOfOperationsAndOperands.append(CalculatorButton.Operation(symbol))
+    }
+    
     mutating func performOperation(_ symbol: String) {
+        //Should I do this in evaluate?  or should this still be perform operation??  What do??
         if let operation = operations[symbol] {
             switch operation {
             case .constant(let value):
@@ -99,6 +124,7 @@ struct CalculatorBrain {
                 resultIsPending = false
             }
             
+            return (0.0, false, "a descriptin")
         }
     }
     
@@ -120,22 +146,53 @@ struct CalculatorBrain {
             return function(firstOperand, secondOperand)
         }
     }
+    
+    func evaluate(using variables: Dictionary<String,Double>? = nil)
+        -> (result: Double?, isPending: Bool, description: String){
+            // maintain perform operation logic
+            //array ????
+            
+            //ignore dict for now
+            
+            //set operand call perform operation(set operation), then evaluate to do the math
+            var accumulator = 0.0
+            
+            var currentProperties: (result: Double?, isPending: Bool, description: String)?
+            
+            for button in sequenceOfOperationsAndOperands {
+                switch button {
+                case .variable(let value):
+                    accumulator = 0.0
+                case .number(let value):
+                    accumulator = value
+                case .Operation(let value):
+                    currentProperties = performOperation(value) //maybe pass in accumulator for this to use
+                }
+            }
+            
+            
+            return (0, true, "")
+    }
 
     
     mutating func setOperand(_ operand: Double) {
-        accumulator = operand
-        if(!resultIsPending) {
-            description = ""
-        }
+        sequenceOfOperationsAndOperands.append(CalculatorButton.number(operand))
+        
+//        accumulator = operand
+//        if(!resultIsPending) {
+//            description = ""
+//        }
     }
     
     mutating func setOperand(variable named: String) {
-        operand = named
+        sequenceOfOperationsAndOperands.append(CalculatorButton.variable(named))
     }
-    
-    var result: Double? {
-        get {
-            return accumulator
-        }
-    }
+   
 }
+
+
+
+
+
+
+
