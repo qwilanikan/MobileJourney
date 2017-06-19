@@ -53,6 +53,7 @@ struct CalculatorBrain {
         "√" : Operation.unaryOperation(sqrt),
         "cos": Operation.unaryOperation(cos),
         "sin": Operation.unaryOperation(sin),
+        "tan": Operation.unaryOperation(tan),
         "^": Operation.binaryOperation({pow($0, $1)}),
         "abs": Operation.unaryOperation(abs),
         "±" : Operation.unaryOperation({-$0}),

@@ -10,6 +10,8 @@ import UIKit
 
 class ViewController: UIViewController {
     
+    var variableDictionary: Dictionary<String,Double>?
+    
     @IBOutlet weak var display: UILabel!
     
     @IBOutlet weak var sequenceOfOperations: UILabel!
@@ -38,7 +40,15 @@ class ViewController: UIViewController {
         set {
             display.text = String(newValue)
         }
-    }    
+    }
+    
+    @IBAction func SetM(_ sender: UIButton) {
+        //var possibleResult: Double?
+        variableDictionary = ["M" : displayValue]
+        let (result, _, _) = brain.evaluate(using: variableDictionary)
+        if let possibleResult = result {
+            displayValue = possibleResult         }
+    }
     
     @IBAction func performOperation(_ sender: UIButton) {
         if userIsInTheMiddleOfTyping {
@@ -59,7 +69,7 @@ class ViewController: UIViewController {
             sequenceOfOperations.text = brain.description + "..."
         } else {
             sequenceOfOperations.text = brain.description + "="
-        }
+        } //maybe add another function to update display
         
     }
 }
