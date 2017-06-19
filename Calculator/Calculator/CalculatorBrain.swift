@@ -14,21 +14,21 @@ struct CalculatorBrain {
     
     var result: Double? {
         get {
-            let (result, _, _) = evaluate()
+            let (result, _, _) = evaluate(using: nil)
             return result
         }
     }
     
     var resultIsPending: Bool {
         get {
-            let (_, isPending, _) = evaluate()
+            let (_, isPending, _) = evaluate(using: nil)
             return isPending
         }
     }
     
     var description: String {
         get {
-            let (_, _, description) = evaluate()
+            let (_, _, description) = evaluate(using: nil)
             return description
         }
     }
@@ -96,15 +96,15 @@ struct CalculatorBrain {
             var description = ""
             var resultIsPending = false
             
-            func performOperation(_ symbol: String){
-                
-                func performPendingBinaryOperation() {
-                    if pendingBinaryOperation != nil && accumulator != nil {
-                        accumulator = pendingBinaryOperation!.perform(with: accumulator!)
-                        pendingBinaryOperation = nil
-                        resultIsPending = false
-                    }
+            func performPendingBinaryOperation() {
+                if pendingBinaryOperation != nil && accumulator != nil {
+                    accumulator = pendingBinaryOperation!.perform(with: accumulator!)
+                    pendingBinaryOperation = nil
+                    resultIsPending = false
                 }
+            }
+            
+            func performOperation(_ symbol: String){
                 
                 if let operation = operations[symbol] {
                     switch operation {
@@ -172,12 +172,15 @@ struct CalculatorBrain {
             
             for button in sequenceOfOperationsAndOperands {
                 switch button {
-                case .variable:
-                    accumulator = 0.0 //set accumulator with
+                case .variable(let variable):
+                    accumulator = 0.0
+                    if let value = variables![variable] {
+                       accumulator = value
+                    }
                 case .number(let value):
                     setAccumulator(value)
                 case .Operation(let value):
-                    performOperation(value) //maybe pass in accumulator for this to use
+                    performOperation(value)
                 }
             }
             
@@ -185,6 +188,8 @@ struct CalculatorBrain {
     }
     
 }
+
+
 
 
 
