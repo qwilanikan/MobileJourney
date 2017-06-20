@@ -89,7 +89,7 @@
                                                         <color key="tintColor" red="1" green="0.83707163569999998" blue="0.53015559410000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                         <state key="normal" title="M"/>
                                                         <connections>
-                                                            <action selector="performOperation:" destination="BYZ-38-t0r" eventType="touchUpInside" id="YdA-uS-3lo"/>
+                                                            <action selector="M:" destination="BYZ-38-t0r" eventType="touchUpInside" id="4eR-hB-P7T"/>
                                                         </connections>
                                                     </button>
                                                 </subviews>
@@ -329,6 +329,7 @@
                                                         <color key="tintColor" red="1" green="0.22999567500000001" blue="0.27758887310000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                         <state key="normal" title="C"/>
                                                         <connections>
+                                                            <action selector="clear:" destination="BYZ-38-t0r" eventType="touchUpInside" id="y5R-nX-pRP"/>
                                                             <action selector="performOperation:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ntd-6Y-Smv"/>
                                                         </connections>
                                                     </button>

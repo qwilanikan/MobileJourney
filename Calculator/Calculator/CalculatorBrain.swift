@@ -75,7 +75,11 @@ struct CalculatorBrain {
     }
     
     mutating func setOperand(variable named: String) {
+        if named == "C" {
+            sequenceOfOperationsAndOperands = []
+        } else {
         sequenceOfOperationsAndOperands.append(CalculatorButton.variable(named))
+        }
     }
     
     
@@ -155,12 +159,11 @@ struct CalculatorBrain {
                         nested = false
                         performPendingBinaryOperation()
                     case .clear:
-                        description = ""
                         nested = false
-                        accumulator = nil
+                        accumulator = 0.0
+                        description = ""
                         resultIsPending = false
                     }
-                    
                 }
             }
             
@@ -175,8 +178,8 @@ struct CalculatorBrain {
                 switch button {
                 case .variable(let variable):
                     accumulator = 0.0
-                    if let value = variables![variable] {
-                       accumulator = value
+                    if let variables = variables {
+                        accumulator = variables[variable]
                     }
                 case .number(let value):
                     setAccumulator(value)
