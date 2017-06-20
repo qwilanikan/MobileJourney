@@ -43,15 +43,27 @@ class ViewController: UIViewController {
     }
     
     func evaluateAndDisplay(){
-        let (result, _, _) = brain.evaluate(using: variableDictionary)
-        if let possibleResult = result {
-            displayValue = possibleResult
+        let (result, isPending, description) = brain.evaluate(using: variableDictionary)
+        
+        if let result = result {
+            displayValue = result
         }
+        if description == "" {
+            sequenceOfOperations.text = brain.description
+            displayValue = 0
+        }
+        else if isPending {
+            sequenceOfOperations.text = brain.description + "..."
+        } else {
+            sequenceOfOperations.text = brain.description + "="
+        }
+        
     }
     
     @IBAction func SetM(_ sender: UIButton) {
         variableDictionary = ["M" : displayValue]
         evaluateAndDisplay()
+        userIsInTheMiddleOfTyping = false
     }
     
     @IBAction func clear(_ sender: UIButton) {
@@ -60,10 +72,12 @@ class ViewController: UIViewController {
         
     }
     
-    @IBAction func M(_ sender: UIButton) {
+    @IBAction func M(_ sender: UIButton){
         brain.setOperand(variable: "M")
         evaluateAndDisplay()
-        
+        userIsInTheMiddleOfTyping = false //this is not perfect because it writes = instead of ...
+        //when M is 8, pi + m x displays: pi + M0.0 x
+        //when M is clicked, I want to be done typeing
     }
     
     @IBAction func performOperation(_ sender: UIButton) {
@@ -74,26 +88,7 @@ class ViewController: UIViewController {
         if let mathematicalSymbol = sender.currentTitle {
             brain.setOperation(mathematicalSymbol)
         }
-        if let result = brain.result {
-            displayValue = result
-        }
-        if brain.description == "" {
-            sequenceOfOperations.text = brain.description
-            displayValue = 0
-        }
-        else if brain.resultIsPending {
-            sequenceOfOperations.text = brain.description + "..."
-        } else {
-            sequenceOfOperations.text = brain.description + "="
-        } //maybe add another function to update display
         
+        evaluateAndDisplay()
     }
 }
-
-// when I press "m" I want m to be in the description
-
-//when you set M, then start typing a new number, what should happen?
-
-//when you set M, the number you previously typed should not be saved in the sequence
-
-//if you click a nimber, then M, what happens?

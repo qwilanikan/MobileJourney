@@ -181,6 +181,12 @@ struct CalculatorBrain {
                     if let variables = variables {
                         accumulator = variables[variable]
                     }
+                    if(!resultIsPending) {
+                        description = "\(variable)"
+                    } else {
+                        description = description + "\(variable)"
+                        nested = true
+                    }
                 case .number(let value):
                     setAccumulator(value)
                 case .Operation(let value):
