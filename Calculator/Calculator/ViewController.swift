@@ -16,9 +16,20 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var sequenceOfOperations: UILabel!
     
+    @IBOutlet weak var displayM: UILabel!
+    
     var userIsInTheMiddleOfTyping = false
     
     private var brain = CalculatorBrain()
+    
+    var displayMValue: String {
+        get {
+            return displayM.text!
+        }
+        set {
+            displayM.text = String(newValue)
+        }
+    }
     
     var displayValue: Double {
         get {
@@ -62,14 +73,15 @@ class ViewController: UIViewController {
     
     @IBAction func SetM(_ sender: UIButton) {
         variableDictionary = ["M" : displayValue]
+        displayMValue = "M = \(displayValue)"
         evaluateAndDisplay()
         userIsInTheMiddleOfTyping = false
     }
     
     @IBAction func clear(_ sender: UIButton) {
         variableDictionary = nil
+        displayMValue = ""
         displayValue = 0.0
-        
     }
     
     @IBAction func M(_ sender: UIButton){
