@@ -44,7 +44,6 @@ struct CalculatorBrain {
         case unaryOperation((Double)->Double)
         case binaryOperation((Double, Double)->Double)
         case equals
-        case clear
     }
     
     private var operations: Dictionary<String, Operation> = [
@@ -61,13 +60,15 @@ struct CalculatorBrain {
         "÷" : Operation.binaryOperation({$0 / $1}),
         "-" : Operation.binaryOperation({$0 - $1}),
         "+" : Operation.binaryOperation({$0 + $1}),
-        "=" : Operation.equals,
-        "C" : Operation.clear
-        
+        "=" : Operation.equals
     ]
     
     mutating func setOperation(_ symbol: String) {
+        if symbol == "C" {
+            sequenceOfOperationsAndOperands = []
+        } else {
         sequenceOfOperationsAndOperands.append(CalculatorButton.Operation(symbol))
+        }
     }
     
     mutating func setOperand(_ operand: Double) {
@@ -75,11 +76,8 @@ struct CalculatorBrain {
     }
     
     mutating func setOperand(variable named: String) {
-        if named == "C" {
-            sequenceOfOperationsAndOperands = []
-        } else {
         sequenceOfOperationsAndOperands.append(CalculatorButton.variable(named))
-        }
+        
     }
     
     
@@ -155,14 +153,11 @@ struct CalculatorBrain {
                             resultIsPending = true
                         }
                     case .equals:
-                        if (!nested){description = description + "\(accumulator!)"}
-                        nested = false
-                        performPendingBinaryOperation()
-                    case .clear:
-                        nested = false
-                        accumulator = 0.0
-                        description = ""
-                        resultIsPending = false
+                        if accumulator != nil {
+                            if (!nested){description = description + "\(accumulator!)"}
+                            nested = false
+                            performPendingBinaryOperation()
+                        }
                     }
                 }
             }

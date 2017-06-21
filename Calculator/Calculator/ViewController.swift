@@ -87,9 +87,8 @@ class ViewController: UIViewController {
     @IBAction func M(_ sender: UIButton){
         brain.setOperand(variable: "M")
         evaluateAndDisplay()
-        userIsInTheMiddleOfTyping = false //this is not perfect because it writes = instead of ...
-        //when M is 8, pi + m x displays: pi + M0.0 x
-        //when M is clicked, I want to be done typeing
+        userIsInTheMiddleOfTyping = false
+        //when M is 8, pi + m x displays: pi + M0.0 x\
     }
     
     @IBAction func performOperation(_ sender: UIButton) {
