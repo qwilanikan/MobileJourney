@@ -80,6 +80,13 @@ struct CalculatorBrain {
         
     }
     
+    mutating func undo() {
+        if !sequenceOfOperationsAndOperands.isEmpty {
+            sequenceOfOperationsAndOperands.removeLast()
+            print(sequenceOfOperationsAndOperands)
+        }
+    }
+    
     
     private struct PendingBinaryOperation {
         let function: (Double, Double) -> Double

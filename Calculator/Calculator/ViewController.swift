@@ -54,14 +54,13 @@ class ViewController: UIViewController {
     }
     
     func evaluateAndDisplay(){
-        let (result, isPending, description) = brain.evaluate(using: variableDictionary)
+        let (returnedResult, isPending, description) = brain.evaluate(using: variableDictionary)
         
-        if let result = result {
+        if let result = returnedResult {
             displayValue = result
         }
         if description == "" {
             sequenceOfOperations.text = brain.description
-            displayValue = 0
         }
         else if isPending {
             sequenceOfOperations.text = brain.description + "..."
@@ -89,6 +88,18 @@ class ViewController: UIViewController {
         evaluateAndDisplay()
         userIsInTheMiddleOfTyping = false
         //when M is 8, pi + m x displays: pi + M0.0 x\
+    }
+    
+    @IBAction func undo(_ sender: UIButton) {
+        if userIsInTheMiddleOfTyping {
+            display.text = String(display.text!.characters.dropLast())
+            if display.text!.characters.count == 0 {
+                userIsInTheMiddleOfTyping = false
+            }
+        } else {
+            brain.undo()
+            evaluateAndDisplay()
+        }
     }
     
     @IBAction func performOperation(_ sender: UIButton) {
