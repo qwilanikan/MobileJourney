@@ -21,6 +21,8 @@
 		21BB63501EFC606A00DC1590 /* Quick.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 21BB634A1EFC5F7C00DC1590 /* Quick.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		21BB63511EFC606A00DC1590 /* Nimble.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 21BB63481EFC5F7900DC1590 /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		21BB63531EFC60FB00DC1590 /* CalculatorBrainSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BB63521EFC60FB00DC1590 /* CalculatorBrainSpec.swift */; };
+		21BB63551F0160F800DC1590 /* CalculatorBrain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BB63541F0160F800DC1590 /* CalculatorBrain.swift */; };
+		21DA99E11F040D63008F58B0 /* CalculatorButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DA99E01F040D63008F58B0 /* CalculatorButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -82,6 +84,8 @@
 		21BB63481EFC5F7900DC1590 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = Carthage/Build/iOS/Nimble.framework; sourceTree = "<group>"; };
 		21BB634A1EFC5F7C00DC1590 /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = Carthage/Build/iOS/Quick.framework; sourceTree = "<group>"; };
 		21BB63521EFC60FB00DC1590 /* CalculatorBrainSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalculatorBrainSpec.swift; sourceTree = "<group>"; };
+		21BB63541F0160F800DC1590 /* CalculatorBrain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalculatorBrain.swift; sourceTree = "<group>"; };
+		21DA99E01F040D63008F58B0 /* CalculatorButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalculatorButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -142,6 +146,8 @@
 				21BB631E1EFC559500DC1590 /* Assets.xcassets */,
 				21BB63201EFC559500DC1590 /* LaunchScreen.storyboard */,
 				21BB63231EFC559500DC1590 /* Info.plist */,
+				21DA99E01F040D63008F58B0 /* CalculatorButton.swift */,
+				21BB63541F0160F800DC1590 /* CalculatorBrain.swift */,
 			);
 			path = TDDCalculator;
 			sourceTree = "<group>";
@@ -314,8 +320,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				21BB63551F0160F800DC1590 /* CalculatorBrain.swift in Sources */,
 				21BB631A1EFC559500DC1590 /* ViewController.swift in Sources */,
 				21BB63181EFC559500DC1590 /* AppDelegate.swift in Sources */,
+				21DA99E11F040D63008F58B0 /* CalculatorButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
