@@ -10,20 +10,40 @@ import Foundation
 
 struct CalculatorBrain {
     
-    var resultIsPending = false
+    private var sequenceOfOperationsAndOperands: Array<CalculatorButton> = []
     
-    private var accumulator: Double?
-    private var operand: String?
-    private var nested = false
+    var result: Double? {
+        get {
+            let (result, _, _) = evaluate(using: nil)
+            return result
+        }
+    }
     
-    var description = ""
+    var resultIsPending: Bool {
+        get {
+            let (_, isPending, _) = evaluate(using: nil)
+            return isPending
+        }
+    }
+    
+    var description: String {
+        get {
+            let (_, _, description) = evaluate(using: nil)
+            return description
+        }
+    }
+    
+    private enum CalculatorButton {
+        case Operation(String)
+        case variable(String)
+        case number(Double)
+    }
     
     private enum Operation {
         case constant(Double)
         case unaryOperation((Double)->Double)
         case binaryOperation((Double, Double)->Double)
         case equals
-        case clear
     }
     
     private var operations: Dictionary<String, Operation> = [
@@ -32,6 +52,7 @@ struct CalculatorBrain {
         "√" : Operation.unaryOperation(sqrt),
         "cos": Operation.unaryOperation(cos),
         "sin": Operation.unaryOperation(sin),
+        "tan": Operation.unaryOperation(tan),
         "^": Operation.binaryOperation({pow($0, $1)}),
         "abs": Operation.unaryOperation(abs),
         "±" : Operation.unaryOperation({-$0}),
@@ -39,78 +60,33 @@ struct CalculatorBrain {
         "÷" : Operation.binaryOperation({$0 / $1}),
         "-" : Operation.binaryOperation({$0 - $1}),
         "+" : Operation.binaryOperation({$0 + $1}),
-        "=" : Operation.equals,
-        "C" : Operation.clear
-        
+        "=" : Operation.equals
     ]
     
-    mutating func performOperation(_ symbol: String) {
-        if let operation = operations[symbol] {
-            switch operation {
-            case .constant(let value):
-                accumulator = value
-                if(!resultIsPending) {
-                    description = "\(symbol)"
-                } else {
-                    description = description + "\(symbol)"
-                    nested = true
-                }
+    mutating func setOperation(_ symbol: String) {
+        if symbol == "C" {
+            sequenceOfOperationsAndOperands = []
+        } else {
+        sequenceOfOperationsAndOperands.append(CalculatorButton.Operation(symbol))
+        }
+    }
+    
+    mutating func setOperand(_ operand: Double) {
+        sequenceOfOperationsAndOperands.append(CalculatorButton.number(operand))
+    }
+    
+    mutating func setOperand(variable named: String) {
+        sequenceOfOperationsAndOperands.append(CalculatorButton.variable(named))
         
-            case .unaryOperation(let function):
-                if accumulator != nil {
-                    if (resultIsPending) {
-                        description = description + "\(symbol)(\(accumulator!)) "
-                        nested = true
-                    } else if description == "" {
-                        description = "\(symbol)(\(accumulator!))"
-                    }
-                    else {
-                        description = "\(symbol)(\(description))"
-                    }
-                    accumulator = function(accumulator!)
-                }
-            case .binaryOperation(let function):
-                if accumulator != nil {
-                    
-                    if (description.isEmpty){
-                        description = "\(accumulator!) \(symbol) "
-                    } else if resultIsPending {
-                        description = description + "\(accumulator!) \(symbol) "
-                    } else {
-                        description = description + "\(symbol) "
-                    }
-                    
-                    if (resultIsPending) {
-                        performPendingBinaryOperation()
-                    }
-                    
-                    pendingBinaryOperation = PendingBinaryOperation(function: function, firstOperand: accumulator!)
-                    accumulator = nil
-                    resultIsPending = true
-                }
-            case .equals:
-                if (!nested){description = description + "\(accumulator!)"}
-                nested = false
-                performPendingBinaryOperation()
-            case .clear:
-                description = ""
-                nested = false
-                accumulator = nil
-                resultIsPending = false
-            }
-            
+    }
+    
+    mutating func undo() {
+        if !sequenceOfOperationsAndOperands.isEmpty {
+            sequenceOfOperationsAndOperands.removeLast()
+            print(sequenceOfOperationsAndOperands)
         }
     }
     
-    private mutating func performPendingBinaryOperation() {
-        if pendingBinaryOperation != nil && accumulator != nil {
-            accumulator = pendingBinaryOperation!.perform(with: accumulator!)
-            pendingBinaryOperation = nil
-            resultIsPending = false
-        }
-    }
-    
-    private var pendingBinaryOperation: PendingBinaryOperation?
     
     private struct PendingBinaryOperation {
         let function: (Double, Double) -> Double
@@ -120,38 +96,115 @@ struct CalculatorBrain {
             return function(firstOperand, secondOperand)
         }
     }
-
     
-    mutating func setOperand(_ operand: Double) {
-        accumulator = operand
-        if(!resultIsPending) {
-            description = ""
-        }
+    func evaluate(using variables: Dictionary<String,Double>? = nil)
+        -> (result: Double?, isPending: Bool, description: String){
+            
+            var nested = false
+            var pendingBinaryOperation: PendingBinaryOperation?
+            var accumulator: Double?
+            var description = ""
+            var resultIsPending = false
+            
+            func performPendingBinaryOperation() {
+                if pendingBinaryOperation != nil && accumulator != nil {
+                    accumulator = pendingBinaryOperation!.perform(with: accumulator!)
+                    pendingBinaryOperation = nil
+                    resultIsPending = false
+                }
+            }
+            
+            func performOperation(_ symbol: String){
+                
+                if let operation = operations[symbol] {
+                    switch operation {
+                    case .constant(let value):
+                        accumulator = value
+                        if(!resultIsPending) {
+                            description = "\(symbol)"
+                        } else {
+                            description = description + "\(symbol)"
+                            nested = true
+                        }
+                        
+                    case .unaryOperation(let function):
+                        if accumulator != nil {
+                            if (resultIsPending) {
+                                description = description + "\(symbol)(\(accumulator!)) "
+                                nested = true
+                            } else if description == "" {
+                                description = "\(symbol)(\(accumulator!))"
+                            }
+                            else {
+                                description = "\(symbol)(\(description))"
+                            }
+                            accumulator = function(accumulator!)
+                        }
+                    case .binaryOperation(let function):
+                        if accumulator != nil {
+                            
+                            if (description.isEmpty){
+                                description = "\(accumulator!) \(symbol) "
+                            } else if resultIsPending {
+                                description = description + "\(accumulator!) \(symbol) "
+                            } else {
+                                description = description + "\(symbol) "
+                            }
+                            
+                            if (resultIsPending) {
+                                performPendingBinaryOperation()
+                            }
+                            
+                            pendingBinaryOperation = PendingBinaryOperation(function: function, firstOperand: accumulator!)
+                            accumulator = nil
+                            resultIsPending = true
+                        }
+                    case .equals:
+                        if accumulator != nil {
+                            if (!nested){description = description + "\(accumulator!)"}
+                            nested = false
+                            performPendingBinaryOperation()
+                        }
+                    }
+                }
+            }
+            
+            func setAccumulator(_ operand: Double) {
+                accumulator = operand
+                if(!resultIsPending) {
+                    description = ""
+                }
+            }
+            
+            for button in sequenceOfOperationsAndOperands {
+                switch button {
+                case .variable(let variable):
+                    accumulator = 0.0
+                    if let variables = variables {
+                        accumulator = variables[variable]
+                    }
+                    if(!resultIsPending) {
+                        description = "\(variable)"
+                    } else {
+                        description = description + "\(variable)"
+                        nested = true
+                    }
+                case .number(let value):
+                    setAccumulator(value)
+                case .Operation(let value):
+                    performOperation(value)
+                }
+            }
+            
+            return (accumulator, resultIsPending, description)
     }
     
-    mutating func setOperand(variable named: String) {
-        operand = named
-    }
-    
-    func evaluate(using variables: Dictionary<String, Double>? = nil )
-        -> (result: Double?, isPending: Bool, description: String)
-    {
-        
-    }
-    
-    var result: Double? {
-        get {
-            return accumulator
-        }
-    }
 }
 
-struct variableDictionary {
-    private var variables: Dictionary<String, Double> = [
-        "M" : nil
-    ]
 
-}
+
+
+
 
 
 

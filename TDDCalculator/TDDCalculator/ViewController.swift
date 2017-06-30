@@ -21,7 +21,7 @@ class ViewController: UIViewController {
     var userIsInTheMiddleOfTyping = false
     
     private var brain = CalculatorBrain()
-    
+//    
     var displayMValue: String {
         get {
             return displayM.text!
@@ -39,7 +39,7 @@ class ViewController: UIViewController {
             display.text = String(newValue)
         }
     }
-    
+//
     @IBAction func touchDigit(_ sender: UIButton) {
         let digit = sender.currentTitle!
         if userIsInTheMiddleOfTyping {
@@ -52,65 +52,65 @@ class ViewController: UIViewController {
             userIsInTheMiddleOfTyping = true
         }
     }
-    
+//
     func evaluateAndDisplay(){
-        let (returnedResult, isPending, description) = brain.evaluate(using: variableDictionary)
-        
-        if let result = returnedResult {
-            displayValue = result
-        }
-        if description == "" {
-            sequenceOfOperations.text = brain.description
-        }
-        else if isPending {
-            sequenceOfOperations.text = brain.description + "..."
-        } else {
-            sequenceOfOperations.text = brain.description + "="
-        }
+//        let (returnedResult, isPending, description) = brain.evaluate(using: variableDictionary)
+//        
+//        if let result = returnedResult {
+//            displayValue = result
+//        }
+//        if description == "" {
+//            sequenceOfOperations.text = brain.description
+//        }
+//        else if isPending {
+//            sequenceOfOperations.text = brain.description + "..."
+//        } else {
+//            sequenceOfOperations.text = brain.description + "="
+//        }
         
     }
-    
+//
     @IBAction func SetM(_ sender: UIButton) {
         variableDictionary = ["M" : displayValue]
         displayMValue = "M = \(displayValue)"
         evaluateAndDisplay()
         userIsInTheMiddleOfTyping = false
     }
-    
+//
     @IBAction func clear(_ sender: UIButton) {
         variableDictionary = nil
         displayMValue = ""
         displayValue = 0.0
     }
-    
-    @IBAction func M(_ sender: UIButton){
-        brain.setOperand(variable: "M")
-        evaluateAndDisplay()
-        userIsInTheMiddleOfTyping = false
-        //when M is 8, pi + m x displays: pi + M0.0 x\
-    }
-    
-    @IBAction func undo(_ sender: UIButton) {
-        if userIsInTheMiddleOfTyping {
-            display.text = String(display.text!.characters.dropLast())
-            if display.text!.characters.count == 0 {
-                userIsInTheMiddleOfTyping = false
-            }
-        } else {
-            brain.undo()
-            evaluateAndDisplay()
-        }
-    }
-    
-    @IBAction func performOperation(_ sender: UIButton) {
-        if userIsInTheMiddleOfTyping {
-            brain.setOperand(displayValue)
-            userIsInTheMiddleOfTyping = false
-        }
-        if let mathematicalSymbol = sender.currentTitle {
-            brain.setOperation(mathematicalSymbol)
-        }
-        
-        evaluateAndDisplay()
-    }
+//
+//    @IBAction func M(_ sender: UIButton){
+//        brain.setOperand(variable: "M")
+//        evaluateAndDisplay()
+//        userIsInTheMiddleOfTyping = false
+//        //when M is 8, pi + m x displays: pi + M0.0 x\
+//    }
+//    
+//    @IBAction func undo(_ sender: UIButton) {
+//        if userIsInTheMiddleOfTyping {
+//            display.text = String(display.text!.characters.dropLast())
+//            if display.text!.characters.count == 0 {
+//                userIsInTheMiddleOfTyping = false
+//            }
+//        } else {
+//            brain.undo()
+//            evaluateAndDisplay()
+//        }
+//    }
+//    
+//    @IBAction func performOperation(_ sender: UIButton) {
+//        if userIsInTheMiddleOfTyping {
+//            brain.setOperand(displayValue)
+//            userIsInTheMiddleOfTyping = false
+//        }
+//        if let mathematicalSymbol = sender.currentTitle {
+//            brain.setOperation(mathematicalSymbol)
+//        }
+//        
+//        evaluateAndDisplay()
+//    }
 }
