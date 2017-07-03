@@ -61,9 +61,9 @@ class CalculatorBrainSpec: QuickSpec {
                 beforeEach {
                     brain.sequenceOfOperationsAndOperands = []
                 }
-
                 
-                    it("should return empty values") {
+                
+                it("should return empty values") {
                     
                     //(result: Double?, isPending: Bool, description: String)
                     let (result, isPending, description) = brain.evaluate()
@@ -221,10 +221,30 @@ class CalculatorBrainSpec: QuickSpec {
                     }
                 }
             }
-            context(""){
+            context("when only + is in the sequence"){
+                it("should return nothing where result is not pending"){
+                    brain.sequenceOfOperationsAndOperands = []
+                    brain.setOperation("+")
+                    let (result, resultIsPending, _) = brain.evaluate()
+                    expect(result).to(beNil())
+                    expect(resultIsPending).to(be(false))
+
+                }
+            }
+            context("When 1 + is in the sequence"){
+                it("should evaluate to nil and result should be pending"){
+                    brain.sequenceOfOperationsAndOperands = []
+                    brain.setOperand(1)
+                    brain.setOperation("+")
+                    let (result, resultIsPending, _) = brain.evaluate()
+                    expect(result).to(beNil())
+                    expect(resultIsPending).to(be(true))
+                    
+                }
                 
             }
-
+            
+            
         }
     }
 }
@@ -245,8 +265,9 @@ class CalculatorBrainSpec: QuickSpec {
 //clear
 //should clear everything
 
-//result is pending 
+//result is pending
 //result
 //description
 // the 3 above are depricated, but they should still return the right things
+
 

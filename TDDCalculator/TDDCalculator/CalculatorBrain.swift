@@ -15,7 +15,7 @@ struct CalculatorBrain {
     private enum Operation {
         case constant(Double)
         case unaryOperation((Double)->Double)
-//        case binaryOperation((Double, Double)->Double)
+        case binaryOperation((Double, Double)->Double)
 //        case equals
     }
     
@@ -27,12 +27,12 @@ struct CalculatorBrain {
         "sin": Operation.unaryOperation(sin),
         "tan": Operation.unaryOperation(tan),
         "abs": Operation.unaryOperation(abs),
-        "±" : Operation.unaryOperation({-$0})
+        "±" : Operation.unaryOperation({-$0}),
+        "+" : Operation.binaryOperation({$0 + $1})
 //        "^": Operation.binaryOperation({pow($0, $1)}),
 //        "×" : Operation.binaryOperation({$0 * $1}),
 //        "÷" : Operation.binaryOperation({$0 / $1}),
 //        "-" : Operation.binaryOperation({$0 - $1}),
-//        "+" : Operation.binaryOperation({$0 + $1}),
 //        "=" : Operation.equals
     ]
     
@@ -48,9 +48,21 @@ struct CalculatorBrain {
         sequenceOfOperationsAndOperands.append(CalculatorButton.operation(operation))
     }
     
+    private struct PendingBinaryOperation {
+        let function: (Double, Double) -> Double
+        let firstOperand: Double
+        
+        func perform(with secondOperand: Double) -> Double {
+            return function(firstOperand, secondOperand)
+        }
+    }
+    
     func evaluate(using variables: Dictionary<String,Double>? = nil)
         ->(result: Double?, isPending: Bool, description: String){
         var result: Double?
+        var pendingBinaryOperation: PendingBinaryOperation?
+        var resultIsPending = false
+            
         for button in sequenceOfOperationsAndOperands {
             switch button {
             case .number(let operand):
@@ -70,7 +82,12 @@ struct CalculatorBrain {
                     case .unaryOperation(let function):
                         if result != nil {
                             result = function(result!)
-
+                        }
+                    case .binaryOperation(let function):
+                        if result != nil {
+                            pendingBinaryOperation = PendingBinaryOperation(function: function, firstOperand: result!)
+                            result = nil
+                            resultIsPending = true
                         }
                     }
                 }
@@ -78,7 +95,7 @@ struct CalculatorBrain {
             
             
         }
-        return (result, false, "")
+        return (result, resultIsPending, "")
     }
     
 }
