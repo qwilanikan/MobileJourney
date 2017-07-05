@@ -16,7 +16,7 @@ struct CalculatorBrain {
         case constant(Double)
         case unaryOperation((Double)->Double)
         case binaryOperation((Double, Double)->Double)
-//        case equals
+        case equals
     }
     
     private var operations: Dictionary<String, Operation> = [
@@ -28,12 +28,12 @@ struct CalculatorBrain {
         "tan": Operation.unaryOperation(tan),
         "abs": Operation.unaryOperation(abs),
         "±" : Operation.unaryOperation({-$0}),
-        "+" : Operation.binaryOperation({$0 + $1})
-//        "^": Operation.binaryOperation({pow($0, $1)}),
-//        "×" : Operation.binaryOperation({$0 * $1}),
-//        "÷" : Operation.binaryOperation({$0 / $1}),
-//        "-" : Operation.binaryOperation({$0 - $1}),
-//        "=" : Operation.equals
+        "+" : Operation.binaryOperation({$0 + $1}),
+        "^": Operation.binaryOperation({pow($0, $1)}),
+        "×" : Operation.binaryOperation({$0 * $1}),
+        "÷" : Operation.binaryOperation({$0 / $1}),
+        "-" : Operation.binaryOperation({$0 - $1}),
+        "=" : Operation.equals
     ]
     
     mutating func setOperand(_ operand: Double){
@@ -59,43 +59,53 @@ struct CalculatorBrain {
     
     func evaluate(using variables: Dictionary<String,Double>? = nil)
         ->(result: Double?, isPending: Bool, description: String){
-        var result: Double?
-        var pendingBinaryOperation: PendingBinaryOperation?
-        var resultIsPending = false
+            var result: Double?
+            var pendingBinaryOperation: PendingBinaryOperation?
+            var resultIsPending = false
             
-        for button in sequenceOfOperationsAndOperands {
-            switch button {
-            case .number(let operand):
-                result = operand
-            case .variable(let variable):
-                result = 0.0
-                if let variables = variables {
-                    if let variable = variables[variable] {
-                        result = variable
-                    }
+            func performPendingBinaryOperation() {
+                if pendingBinaryOperation != nil && result != nil {
+                    result = pendingBinaryOperation!.perform(with: result!)
+                    pendingBinaryOperation = nil
+                    resultIsPending = false
                 }
-            case .operation(let symbol):
-                if let operation = operations[symbol] {
-                    switch operation {
-                    case .constant(let value):
-                        result = value
-                    case .unaryOperation(let function):
-                        if result != nil {
-                            result = function(result!)
+            }
+            
+            for button in sequenceOfOperationsAndOperands {
+                switch button {
+                case .number(let operand):
+                    result = operand
+                case .variable(let variable):
+                    result = 0.0
+                    if let variables = variables {
+                        if let variable = variables[variable] {
+                            result = variable
                         }
-                    case .binaryOperation(let function):
-                        if result != nil {
-                            pendingBinaryOperation = PendingBinaryOperation(function: function, firstOperand: result!)
-                            result = nil
-                            resultIsPending = true
+                    }
+                case .operation(let symbol):
+                    if let operation = operations[symbol] {
+                        switch operation {
+                        case .constant(let value):
+                            result = value
+                        case .unaryOperation(let function):
+                            if result != nil {
+                                result = function(result!)
+                            }
+                        case .binaryOperation(let function):
+                            if result != nil {
+                                pendingBinaryOperation = PendingBinaryOperation(function: function, firstOperand: result!)
+                                result = nil
+                                resultIsPending = true
+                            }
+                        case .equals:
+                            if result != nil {
+                                performPendingBinaryOperation()
+                            }
                         }
                     }
                 }
             }
-            
-            
-        }
-        return (result, resultIsPending, "")
+            return (result, resultIsPending, "")
     }
     
 }

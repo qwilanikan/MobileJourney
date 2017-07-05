@@ -228,7 +228,6 @@ class CalculatorBrainSpec: QuickSpec {
                     let (result, resultIsPending, _) = brain.evaluate()
                     expect(result).to(beNil())
                     expect(resultIsPending).to(be(false))
-
                 }
             }
             context("When 1 + is in the sequence"){
@@ -239,10 +238,164 @@ class CalculatorBrainSpec: QuickSpec {
                     let (result, resultIsPending, _) = brain.evaluate()
                     expect(result).to(beNil())
                     expect(resultIsPending).to(be(true))
+                }
+            }
+            context("When 1 + 1 is in the sequence"){
+                it("should evaluate to 2 and result should not be pending"){
+                    brain.sequenceOfOperationsAndOperands = []
+                    brain.setOperand(1)
+                    brain.setOperation("+")
+                    brain.setOperand(1)
+                    let (result, resultIsPending, _) = brain.evaluate()
+                    expect(result).to(equal(1))
+                    expect(resultIsPending).to(be(true))
+                }
+            }
+            context("When 1 + 1  = is in the sequence"){
+                it("should evaluate to 2 and result should not be pending"){
+                    brain.sequenceOfOperationsAndOperands = []
+                    brain.setOperand(1)
+                    brain.setOperation("+")
+                    brain.setOperand(1)
+                    brain.setOperation("=")
+                    let (result, resultIsPending, _) = brain.evaluate()
+                    expect(result).to(equal(2))
+                    expect(resultIsPending).to(be(false))
+                }
+            }
+            
+            context("When 1 + = is in the sequence"){
+                it("should evaluate to nil and result should be pending"){
+                    brain.sequenceOfOperationsAndOperands = []
+                    brain.setOperand(1)
+                    brain.setOperation("+")
+                    brain.setOperation("=")
+                    let (result, resultIsPending, _) = brain.evaluate()
+                    expect(result).to(beNil())
+                    expect(resultIsPending).to(be(true))
+                }
+            }
+            
+            context("When = is in the sequence"){
+                it("should evaluate to nil and result should not be pending"){
+                    brain.sequenceOfOperationsAndOperands = []
+                    brain.setOperation("=")
+                    let (result, resultIsPending, _) = brain.evaluate()
+                    expect(result).to(beNil())
+                    expect(resultIsPending).to(be(false))
+                }
+            }
+            
+            context("When 1 + = is in the sequence"){
+                it("should evaluate to nil and result should be pending"){
+                    brain.sequenceOfOperationsAndOperands = []
+                    brain.setOperand(1)
+                    brain.setOperation("+")
+                    brain.setOperation("=")
+                    let (result, resultIsPending, _) = brain.evaluate()
+                    expect(result).to(beNil())
+                    expect(resultIsPending).to(be(true))
+                }
+            }
+            
+            context("When 1 = is in the sequence"){
+                it("should evaluate to 1 and result should not pending"){
+                    brain.sequenceOfOperationsAndOperands = []
+                    brain.setOperand(1)
+                    brain.setOperation("=")
+                    let (result, resultIsPending, _) = brain.evaluate()
+                    expect(result).to(equal(1))
+                    expect(resultIsPending).to(be(false))
+                }
+            }
+            
+            context("when 2"){
+                beforeEach {
+                    brain.sequenceOfOperationsAndOperands = []
+                    brain.setOperand(2)
+                }
+                
+                context("^ 4 = is in the sequence of the operations"){
+                    beforeEach {
+                        brain.setOperand(2)
+                        brain.setOperation("^")
+                        brain.setOperand(4)
+                        brain.setOperation("=")
+                    }
+                    
+                    it("should evaluate to operand to the power of the operand"){
+                        let (result, resultIsPending, _) = brain.evaluate()
+                        expect(result).to(equal(pow(2, 4)))
+                        expect(resultIsPending).to(be(false))
+                    }
                     
                 }
                 
+                context("x 4 = is in the sequence of the operations"){
+                    beforeEach {
+                        brain.setOperand(2)
+                        brain.setOperation("×")
+                        brain.setOperand(4)
+                        brain.setOperation("=")
+                    }
+                    
+                    it("should evaluate to operand times the operand"){
+                        let (result, resultIsPending, _) = brain.evaluate()
+                        expect(result).to(equal(2*4))
+                        expect(resultIsPending).to(be(false))
+                    }
+                    
+                }
+                
+                context("÷ 4 = is in the sequence of the operations"){
+                    beforeEach {
+                        brain.setOperand(2)
+                        brain.setOperation("÷")
+                        brain.setOperand(4)
+                        brain.setOperation("=")
+                    }
+                    
+                    it("should evaluate to operand divided by the second operand"){
+                        let (result, resultIsPending, _) = brain.evaluate()
+                        expect(result).to(equal(2/4))
+                        expect(resultIsPending).to(be(false))
+                    }
+                    
+                }
+
+                context("- 4 = is in the sequence of the operations"){
+                    beforeEach {
+                        brain.setOperand(2)
+                        brain.setOperation("-")
+                        brain.setOperand(4)
+                        brain.setOperation("=")
+                    }
+                    
+                    it("should evaluate to operand minus the second operand"){
+                        let (result, resultIsPending, _) = brain.evaluate()
+                        expect(result).to(equal(2-4))
+                        expect(resultIsPending).to(be(false))
+                    }
+                    
+                }
+                
+//
+//                
+//                context("- 4 ="){
+//                    brain.setOperation("-")
+//                    brain.setOperand(4)
+//                    brain.setOperation("=")
+//                    
+//                    it("should evaluate to operand to the power of the operand"){
+//                        let (result, resultIsPending, _) = brain.evaluate()
+//                        expect(result).to(equal(2-4))
+//                        expect(resultIsPending).to(be(false))
+//                    }
+//                    
+//                }
+                
             }
+            
             
             
         }
