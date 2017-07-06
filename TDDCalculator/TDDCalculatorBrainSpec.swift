@@ -64,14 +64,10 @@ class CalculatorBrainSpec: QuickSpec {
                 
                 
                 it("should return empty values") {
-                    
-                    //(result: Double?, isPending: Bool, description: String)
                     let (result, isPending, description) = brain.evaluate()
                     expect(result).to(beNil())
                     expect(isPending).to(be(false))
                     expect(description).to(equal(""))
-                    
-                    //(accumulator, resultIsPending, description)
                 }
                 
             }
@@ -88,37 +84,69 @@ class CalculatorBrainSpec: QuickSpec {
                     expect(isPending).to(be(false))
                     expect(description).to(equal(""))
                 }
+                
             }
             
             context("when one variable operand is in the sequence"){
-                beforeEach {
-                    brain.sequenceOfOperationsAndOperands = []
-                    brain.setOperand("X")
-                }
-                context("and there is no dictionary") {
-                    
-                    it("should evaluate to 0"){
-                        let (result, _, _) = brain.evaluate()
-                        expect(result).to(equal(0))
+                context("and the variable is X"){
+                    beforeEach {
+                        brain.sequenceOfOperationsAndOperands = []
+                        brain.setOperand("X")
+                    }
+                    context("and there is no dictionary") {
+                        
+                        it("should evaluate to 0"){
+                            let (result, _, _) = brain.evaluate()
+                            expect(result).to(equal(0))
+                        }
+                        
+                        it("should have a description of X"){
+                            let (_, _, description) = brain.evaluate()
+                            expect(description).to(equal("X"))
+                        }
+                        
                     }
                     
+                    context("and there is a dictionary without that variable in it") {
+                        it("should evaluate to 0"){
+                            let (result, _, _) = brain.evaluate(using: ["M" : 1.0])
+                            expect(result).to(equal(0))
+                        }
+                        
+                        it("should have a description of X"){
+                            let (_, _, description) = brain.evaluate()
+                            expect(description).to(equal("X"))
+                        }
+                        
+                    }
+                    
+                    context("and there is a dictionary with that variable in it") {
+                        it("should evaluate to that variable's value"){
+                            let (result, _, _) = brain.evaluate(using: ["X" : 1.0])
+                            expect(result).to(equal(1))
+                        }
+                        
+                        it("should have a description of X"){
+                            let (_, _, description) = brain.evaluate()
+                            expect(description).to(equal("X"))
+                        }
+                    }
+ 
                 }
-                
-                context("and there is a dictionary without that variable in it") {
-                    it("should evaluate to 0"){
-                        let (result, _, _) = brain.evaluate(using: ["M" : 1.0])
-                        expect(result).to(equal(0))
+                context("and the variable is C"){
+                    beforeEach {
+                        brain.sequenceOfOperationsAndOperands = []
+                        brain.setOperand("C")
+                    }
+                    context("and there is no dictionary") {
+                        it("should have a description of C"){
+                            let (_, _, description) = brain.evaluate()
+                            expect(description).to(equal("C"))
+                        }
                     }
                 }
-                
-                context("and there is a dictionary with that variable in it") {
-                    it("should evaluate to that variable's value"){
-                        let (result, _, _) = brain.evaluate(using: ["X" : 1.0])
-                        expect(result).to(equal(1))
-                    }
-                }
-                
             }
+            
             context("When one constant operation is in the sequence"){
                 context("and it is pi"){
                     beforeEach {
@@ -128,6 +156,10 @@ class CalculatorBrainSpec: QuickSpec {
                     it("should evaluate to 3.14..."){
                         let (result, _, _) = brain.evaluate()
                         expect(result).to(equal(Double.pi))
+                    }
+                    it("should have a description of π"){
+                        let (_, _, description) = brain.evaluate()
+                        expect(description).to(equal("π"))
                     }
                 }
                 
@@ -140,6 +172,10 @@ class CalculatorBrainSpec: QuickSpec {
                         let (result, _, _) = brain.evaluate()
                         expect(result).to(equal(M_E))
                     }
+                    it("should have a description of e"){
+                        let (_, _, description) = brain.evaluate()
+                        expect(description).to(equal("e"))
+                    }
                 }
             }
             context("when one unary operation is in the sequence"){
@@ -150,6 +186,10 @@ class CalculatorBrainSpec: QuickSpec {
                 it("should evaluate to nothing"){
                     let (result, _, _) = brain.evaluate()
                     expect(result).to(beNil())
+                }
+                it("should have a description of nothing"){
+                    let (_, _, description) = brain.evaluate()
+                    expect(description).to(equal(""))
                 }
             }
             
@@ -164,6 +204,10 @@ class CalculatorBrainSpec: QuickSpec {
                         let (result, _, _) = brain.evaluate()
                         expect(result).to(equal(2))
                     }
+                    it("should have a description of √(4.0)"){
+                        let (_, _, description) = brain.evaluate()
+                        expect(description).to(equal("√(4.0)"))
+                    }
                 }
                 context("and the operation is cosin"){
                     beforeEach {
@@ -174,6 +218,10 @@ class CalculatorBrainSpec: QuickSpec {
                     it("should evaluate to cos of 4"){
                         let (result, _, _) = brain.evaluate()
                         expect(result).to(equal(cos(4)))
+                    }
+                    it("should have a description of cos(4.0)"){
+                        let (_, _, description) = brain.evaluate()
+                        expect(description).to(equal("cos(4.0)"))
                     }
                 }
                 context("and the operation is sin"){
@@ -222,13 +270,19 @@ class CalculatorBrainSpec: QuickSpec {
                 }
             }
             context("when only + is in the sequence"){
-                it("should return nothing where result is not pending"){
+                beforeEach {
                     brain.sequenceOfOperationsAndOperands = []
                     brain.setOperation("+")
+                }
+                it("should return nothing where result is not pending"){
                     let (result, resultIsPending, _) = brain.evaluate()
                     expect(result).to(beNil())
                     expect(resultIsPending).to(be(false))
                 }
+                it("should have a description of nothing"){
+                    let (_, _, description) = brain.evaluate()
+                    expect(description).to(equal(""))
+                } //you are here
             }
             context("When 1 + is in the sequence"){
                 it("should evaluate to nil and result should be pending"){
@@ -376,26 +430,46 @@ class CalculatorBrainSpec: QuickSpec {
                         expect(result).to(equal(2-4))
                         expect(resultIsPending).to(be(false))
                     }
-                    
                 }
-                
-//
-//                
-//                context("- 4 ="){
-//                    brain.setOperation("-")
-//                    brain.setOperand(4)
-//                    brain.setOperation("=")
-//                    
-//                    it("should evaluate to operand to the power of the operand"){
-//                        let (result, resultIsPending, _) = brain.evaluate()
-//                        expect(result).to(equal(2-4))
-//                        expect(resultIsPending).to(be(false))
-//                    }
-//                    
-//                }
-                
             }
             
+            context("when you get description from the brain"){
+                beforeEach {
+                    brain.sequenceOfOperationsAndOperands = []
+                }
+                
+                it("gets the same description as is returned from the evaluate"){
+                    let (_, _, description) = brain.evaluate()
+                    expect(brain.description).to(equal(description))
+                    
+                }
+            }
+            
+            context("when you get resultIsPending from the brain"){
+                beforeEach {
+                    brain.sequenceOfOperationsAndOperands = []
+                }
+                
+                it("gets the same bool as is returned from the evaluate isPending"){
+                    let (_, isPending, _) = brain.evaluate()
+                    expect(brain.resultIsPending).to(equal(isPending))
+                    
+                }
+            }
+            
+            context("when you get result from the brain"){
+                beforeEach {
+                    brain.sequenceOfOperationsAndOperands = []
+                }
+                
+                it("gets the same result as is returned from the evaluate"){
+                    //                    result, isPending, description
+                    brain.setOperand(1)
+                    let (result, _, _) = brain.evaluate()
+                    expect(brain.result).to(equal(result))
+                    
+                }
+            }
             
             
         }
@@ -404,23 +478,9 @@ class CalculatorBrainSpec: QuickSpec {
 
 /// calculator brain should:
 
-//evaluate
-//evaluate should:
-// various calculator functions
-//is a binary operation pending
-// get variable from dictionary
-// if the variable is not in the dictionary, it's value is zero
-
-
 //undo
 //undo should go back one in the sequence of buttons pressed
 
 //clear
 //should clear everything
-
-//result is pending
-//result
-//description
-// the 3 above are depricated, but they should still return the right things
-
 

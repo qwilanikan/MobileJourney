@@ -10,6 +10,27 @@ import Foundation
 
 struct CalculatorBrain {
     
+    var description: String {
+        get {
+            let (_, _, description) = evaluate(using: nil)
+            return description
+        }
+    }
+    
+    var resultIsPending: Bool {
+        get {
+            let (_, isPending, _) = evaluate(using: nil)
+            return isPending
+        }
+    }
+    
+    var result: Double? {
+        get {
+            let (result, _, _) = evaluate(using: nil)
+            return result
+        }
+    }
+    
     var sequenceOfOperationsAndOperands: Array<CalculatorButton> = []
     
     private enum Operation {
@@ -57,11 +78,50 @@ struct CalculatorBrain {
         }
     }
     
+    
+    func createDescription(using variables: Dictionary<String,Double>? = nil)
+        -> String {
+            var description = ""
+            var accumulator: Double?
+            
+            for button in sequenceOfOperationsAndOperands {
+                switch button {
+                case .number(let operand):
+                    accumulator = operand
+                    
+                case .variable(let variable):
+                    description = variable
+                    
+                case .operation(let symbol):
+                    if let operation = operations[symbol] {
+                        switch operation {
+                        case .constant:
+                            description = symbol
+                        case .unaryOperation:
+                            if accumulator != nil {
+                                description = "\(symbol)(\(accumulator!))"
+
+                            }
+                        case .binaryOperation:
+                            description = ""
+                        case .equals:
+                            description = ""
+                        }
+                    }
+                }
+            }
+            return description
+    }
+
+
+
+
     func evaluate(using variables: Dictionary<String,Double>? = nil)
         ->(result: Double?, isPending: Bool, description: String){
             var result: Double?
             var pendingBinaryOperation: PendingBinaryOperation?
             var resultIsPending = false
+            var description = ""
             
             func performPendingBinaryOperation() {
                 if pendingBinaryOperation != nil && result != nil {
@@ -105,7 +165,10 @@ struct CalculatorBrain {
                     }
                 }
             }
-            return (result, resultIsPending, "")
+            
+            description = createDescription(using: variables)
+            
+            return (result, resultIsPending, description)
     }
     
 }
