@@ -83,6 +83,8 @@ struct CalculatorBrain {
         -> String {
             var description = ""
             var accumulator: Double?
+            var resultIsPending = false
+            var nested = false
             
             for button in sequenceOfOperationsAndOperands {
                 switch button {
@@ -96,25 +98,54 @@ struct CalculatorBrain {
                     if let operation = operations[symbol] {
                         switch operation {
                         case .constant:
-                            description = symbol
+                            if(!resultIsPending) {
+                                description = symbol
+                            }
+                            else {
+                                description = description + "\(symbol) "
+                                nested = true
+                            }
+                            accumulator = 0
+                            
                         case .unaryOperation:
                             if accumulator != nil {
-                                description = "\(symbol)(\(accumulator!))"
-
+                                if (resultIsPending) {
+                                    description = description + "\(symbol)(\(accumulator!)) "
+                                    nested = true
+                                } else if description == "" {
+                                    description = "\(symbol)(\(accumulator!)) "
+                                } else {
+                                    description = "\(symbol)(\(description)) "}
                             }
+                            
                         case .binaryOperation:
-                            description = ""
+                            if accumulator != nil {
+                                
+                                if (description.isEmpty){
+                                    description = "\(accumulator!) \(symbol) "
+                                } else if resultIsPending {
+                                    description = description + "\(accumulator!) \(symbol) "
+                                } else {
+                                    description = description + " \(symbol) "
+                                }
+                                
+                                resultIsPending = true
+                                accumulator = nil
+                            }
                         case .equals:
-                            description = ""
+                            if accumulator != nil {
+                                if (!nested){description = description + "\(accumulator!) "}
+                                nested = false
+                                resultIsPending = false
+                            }
+
                         }
                     }
+                    
                 }
             }
             return description
     }
-
-
-
 
     func evaluate(using variables: Dictionary<String,Double>? = nil)
         ->(result: Double?, isPending: Bool, description: String){

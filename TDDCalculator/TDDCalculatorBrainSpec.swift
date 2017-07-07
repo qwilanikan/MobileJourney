@@ -206,7 +206,7 @@ class CalculatorBrainSpec: QuickSpec {
                     }
                     it("should have a description of √(4.0)"){
                         let (_, _, description) = brain.evaluate()
-                        expect(description).to(equal("√(4.0)"))
+                        expect(description).to(equal("√(4.0) "))
                     }
                 }
                 context("and the operation is cosin"){
@@ -221,7 +221,7 @@ class CalculatorBrainSpec: QuickSpec {
                     }
                     it("should have a description of cos(4.0)"){
                         let (_, _, description) = brain.evaluate()
-                        expect(description).to(equal("cos(4.0)"))
+                        expect(description).to(equal("cos(4.0) "))
                     }
                 }
                 context("and the operation is sin"){
@@ -282,84 +282,109 @@ class CalculatorBrainSpec: QuickSpec {
                 it("should have a description of nothing"){
                     let (_, _, description) = brain.evaluate()
                     expect(description).to(equal(""))
-                } //you are here
+                }
             }
             context("When 1 + is in the sequence"){
-                it("should evaluate to nil and result should be pending"){
+                beforeEach {
                     brain.sequenceOfOperationsAndOperands = []
                     brain.setOperand(1)
                     brain.setOperation("+")
+                }
+                it("should evaluate to nil and result should be pending"){
                     let (result, resultIsPending, _) = brain.evaluate()
                     expect(result).to(beNil())
                     expect(resultIsPending).to(be(true))
                 }
+                it("should have a description of 1 + "){
+                    let (_, _, description) = brain.evaluate()
+                    expect(description).to(equal("1.0 + "))
+                }
             }
             context("When 1 + 1 is in the sequence"){
-                it("should evaluate to 2 and result should not be pending"){
+                beforeEach {
                     brain.sequenceOfOperationsAndOperands = []
                     brain.setOperand(1)
                     brain.setOperation("+")
                     brain.setOperand(1)
+                }
+                it("should evaluate to 2 and result should not be pending"){
                     let (result, resultIsPending, _) = brain.evaluate()
                     expect(result).to(equal(1))
                     expect(resultIsPending).to(be(true))
                 }
+                it("should have a description of 1 + "){
+                    let (_, _, description) = brain.evaluate()
+                    expect(description).to(equal("1.0 + "))
+                }
             }
             context("When 1 + 1  = is in the sequence"){
-                it("should evaluate to 2 and result should not be pending"){
+                beforeEach {
                     brain.sequenceOfOperationsAndOperands = []
                     brain.setOperand(1)
                     brain.setOperation("+")
                     brain.setOperand(1)
                     brain.setOperation("=")
+                }
+                it("should evaluate to 2 and result should not be pending"){
                     let (result, resultIsPending, _) = brain.evaluate()
                     expect(result).to(equal(2))
                     expect(resultIsPending).to(be(false))
                 }
+                it("should have a description of 1 + 1 "){
+                    let (_, _, description) = brain.evaluate()
+                    expect(description).to(equal("1.0 + 1.0 "))
+                }
             }
             
             context("When 1 + = is in the sequence"){
-                it("should evaluate to nil and result should be pending"){
+                beforeEach {
                     brain.sequenceOfOperationsAndOperands = []
                     brain.setOperand(1)
                     brain.setOperation("+")
                     brain.setOperation("=")
+                }
+                it("should evaluate to nil and result should be pending"){
                     let (result, resultIsPending, _) = brain.evaluate()
                     expect(result).to(beNil())
                     expect(resultIsPending).to(be(true))
+                }
+                it("should have a description of 1 + "){
+                    let (_, _, description) = brain.evaluate()
+                    expect(description).to(equal("1.0 + "))
                 }
             }
             
             context("When = is in the sequence"){
-                it("should evaluate to nil and result should not be pending"){
+                beforeEach {
                     brain.sequenceOfOperationsAndOperands = []
                     brain.setOperation("=")
+                }
+                it("should evaluate to nil and result should not be pending"){
+                
                     let (result, resultIsPending, _) = brain.evaluate()
                     expect(result).to(beNil())
                     expect(resultIsPending).to(be(false))
                 }
-            }
-            
-            context("When 1 + = is in the sequence"){
-                it("should evaluate to nil and result should be pending"){
-                    brain.sequenceOfOperationsAndOperands = []
-                    brain.setOperand(1)
-                    brain.setOperation("+")
-                    brain.setOperation("=")
-                    let (result, resultIsPending, _) = brain.evaluate()
-                    expect(result).to(beNil())
-                    expect(resultIsPending).to(be(true))
+                it("should have a description of nothing"){
+                    let (_, _, description) = brain.evaluate()
+                    expect(description).to(equal(""))
                 }
             }
             
             context("When 1 = is in the sequence"){
-                it("should evaluate to 1 and result should not pending"){
+                beforeEach {
                     brain.sequenceOfOperationsAndOperands = []
                     brain.setOperand(1)
                     brain.setOperation("=")
+                }
+                it("should evaluate to 1 and result should not pending"){
                     let (result, resultIsPending, _) = brain.evaluate()
                     expect(result).to(equal(1))
                     expect(resultIsPending).to(be(false))
+                }
+                it("should have a description of 1"){
+                    let (_, _, description) = brain.evaluate()
+                    expect(description).to(equal("1.0 "))
                 }
             }
             
@@ -382,7 +407,10 @@ class CalculatorBrainSpec: QuickSpec {
                         expect(result).to(equal(pow(2, 4)))
                         expect(resultIsPending).to(be(false))
                     }
-                    
+                    it("should have a description of 2 ^ 4"){
+                        let (_, _, description) = brain.evaluate()
+                        expect(description).to(equal("2.0 ^ 4.0 "))
+                    }
                 }
                 
                 context("x 4 = is in the sequence of the operations"){
@@ -430,6 +458,92 @@ class CalculatorBrainSpec: QuickSpec {
                         expect(result).to(equal(2-4))
                         expect(resultIsPending).to(be(false))
                     }
+                }
+            }
+            
+            context("when 1 + e is in the sequence of the operations"){
+                beforeEach {
+                    brain.sequenceOfOperationsAndOperands = []
+                    brain.setOperand(1)
+                    brain.setOperation("+")
+                    brain.setOperation("e")
+                }
+                it("should have a description of 1 + e "){
+                    let (_, _, description) = brain.evaluate()
+                    expect(description).to(equal("1.0 + e "))
+                }
+                
+            }
+            context("when 1 + 1 cos is in the sequence of the operations"){
+                beforeEach {
+                    brain.sequenceOfOperationsAndOperands = []
+                    brain.setOperand(1)
+                    brain.setOperation("+")
+                    brain.setOperand(1)
+                    brain.setOperation("cos")
+                }
+                it("should have a description of 1 + cos(1) "){
+                    let (_, _, description) = brain.evaluate()
+                    expect(description).to(equal("1.0 + cos(1.0) "))
+                }
+                
+            }
+            
+            context("when 1 + 1 = cos is in the sequence of the operations"){
+                beforeEach {
+                    brain.sequenceOfOperationsAndOperands = []
+                    brain.setOperand(1)
+                    brain.setOperation("+")
+                    brain.setOperand(1)
+                    brain.setOperation("=")
+                    brain.setOperation("cos")
+                }
+                it("should have a description of cos(1 + 1) "){
+                    let (_, _, description) = brain.evaluate()
+                    expect(description).to(equal("cos(1.0 + 1.0 ) "))
+                }
+            }
+            
+            context("when e + 1 is in the sequence of the operations"){
+                beforeEach {
+                    brain.sequenceOfOperationsAndOperands = []
+                    brain.setOperation("e")
+                    brain.setOperation("+")
+                    brain.setOperand(1)
+                }
+                it("should have a description of e + "){
+                    let (_, _, description) = brain.evaluate()
+                    expect(description).to(equal("e + "))
+                }
+            }
+  
+            context("when e + 1 = is in the sequence of the operations"){
+                beforeEach {
+                    brain.sequenceOfOperationsAndOperands = []
+                    brain.setOperation("e")
+                    brain.setOperation("+")
+                    brain.setOperand(1)
+                    brain.setOperation("=")
+                 
+                }
+                it("should have a description of e + 1 "){
+                    let (_, _, description) = brain.evaluate()
+                    expect(description).to(equal("e + 1.0 "))
+                }
+            }
+            
+            context("when 1 + 1 + is in the sequence of the operations"){
+                beforeEach {
+                    brain.sequenceOfOperationsAndOperands = []
+                    brain.setOperand(1)
+                    brain.setOperation("+")
+                    brain.setOperand(1)
+                    brain.setOperation("+")
+                    
+                }
+                it("should have a description of 1 + 1 +"){
+                    let (_, _, description) = brain.evaluate()
+                    expect(description).to(equal("1.0 + 1.0 + "))
                 }
             }
             
