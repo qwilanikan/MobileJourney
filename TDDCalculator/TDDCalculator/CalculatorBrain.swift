@@ -66,7 +66,11 @@ struct CalculatorBrain {
     }
     
     mutating func setOperation(_ operation: String){
-        sequenceOfOperationsAndOperands.append(CalculatorButton.operation(operation))
+        if operation == "C" {
+            sequenceOfOperationsAndOperands = []
+        } else {
+            sequenceOfOperationsAndOperands.append(CalculatorButton.operation(operation))
+        }
     }
     
     private struct PendingBinaryOperation {
@@ -200,6 +204,13 @@ struct CalculatorBrain {
             description = createDescription(using: variables)
             
             return (result, resultIsPending, description)
+    }
+    
+    mutating func undo() {
+        if !sequenceOfOperationsAndOperands.isEmpty {
+            sequenceOfOperationsAndOperands.removeLast()
+            print(sequenceOfOperationsAndOperands)
+        }
     }
     
 }

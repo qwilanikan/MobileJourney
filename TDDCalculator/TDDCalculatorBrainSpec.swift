@@ -584,16 +584,33 @@ class CalculatorBrainSpec: QuickSpec {
                     
                 }
             }
+            context("When you undo"){
+                beforeEach{
+                    brain.sequenceOfOperationsAndOperands = []
+                    brain.setOperand(1)
+                }
+                it("should remove the last item"){
+                    brain.undo()
+                    expect(brain.sequenceOfOperationsAndOperands).to(equal([]))
+                }
+            }
             
+            context("operation is c"){
+                beforeEach{
+                    brain.sequenceOfOperationsAndOperands = []
+                    brain.setOperand(1)
+                }
+                it("should clear the sequence"){
+                    brain.setOperation("C")
+                    expect(brain.sequenceOfOperationsAndOperands).to(equal([]))
+                }
+            }
             
         }
     }
 }
 
 /// calculator brain should:
-
-//undo
-//undo should go back one in the sequence of buttons pressed
 
 //clear
 //should clear everything

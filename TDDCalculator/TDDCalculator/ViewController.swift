@@ -90,17 +90,17 @@ class ViewController: UIViewController {
         //when M is 8, pi + m x displays: pi + M0.0 x\
     }
     
-//    @IBAction func undo(_ sender: UIButton) {
-//        if userIsInTheMiddleOfTyping {
-//            display.text = String(display.text!.characters.dropLast())
-//            if display.text!.characters.count == 0 {
-//                userIsInTheMiddleOfTyping = false
-//            }
-//        } else {
-//            brain.undo()
-//            evaluateAndDisplay()
-//        }
-//    }
+    @IBAction func undo(_ sender: UIButton) {
+        if userIsInTheMiddleOfTyping {
+            display.text = String(display.text!.characters.dropLast())
+            if display.text!.characters.count == 0 {
+                userIsInTheMiddleOfTyping = false
+            }
+        } else {
+            brain.undo()
+            evaluateAndDisplay()
+        }
+    }
     
     @IBAction func performOperation(_ sender: UIButton) {
         if userIsInTheMiddleOfTyping {
