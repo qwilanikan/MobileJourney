@@ -9,16 +9,10 @@
 import UIKit
 import Twitter
 
-// this entire project will not work
-// unless you make a Workspace that includes
-// both this application
-// and the Twitter project
-// and you drag the Product of the Twitter framework build
-// into the Embedded Binaries section
-// of the Project Settings of this application
-
 class TweetTableViewController: UITableViewController, UITextFieldDelegate
 {
+    var viewModel: TweetTableViewModel!
+    
     // MARK: Model
 
     // part of our Model
